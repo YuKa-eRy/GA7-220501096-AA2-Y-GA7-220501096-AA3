@@ -3,11 +3,11 @@ session_start();
 
 include('../include/connection.php');
 
-if ($_SERVER["REQUEST_METHOD"] === "POST"){
+if ($_SERVER["REQUEST_METHOD"] == "POST"){
     $correo = $_POST["correo"];
-    $password = $_POST["cedula"];
+    $password = $_POST["password"];
 
-    $stmt = $conn->prepare("SELECT `c.correo`, `c.cedula` `r.rol` AS `roles` FROM `cuentas c` JOIN `roles r` ON `c.id_rol` = `r.id_rol`");
+    $stmt = $conn->prepare("SELECT c.correo, c.cedula, r.rol AS roles FROM cuentas c JOIN roles r ON c.id_rol = r.id_rol WHERE c.correo = ?");
     $stmt->bind_param("s", $correo);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -16,28 +16,29 @@ if ($_SERVER["REQUEST_METHOD"] === "POST"){
         $row = $result->fetch_assoc();
 
         //verificación de la cédula
-        if ($cédula === $row['cedula']) {
+        if ($password === $row['password']) {
             //permiso para continuar e identificación y sepación de ruta por rol (datos correctos)
             $_SESSION['usuario_rol'] = $row['roles'];
 
             if ($row['roles'] === 'Administrador') {
-                header("location: ../template/menu_admin.php"); //Ruta para menú principal de administrador
-            } else if ($row['roles'] === 'Usuario') {
-                header("location: ../template/menu_user.php"); //Ruta para menú principal usuario
+                header("Location: ../template/menu_admin.php"); //Ruta para menú principal de administrador
+            } elseif ($row['roles'] === 'Usuario') {
+                header("Location: ../template/menu_user.php"); //Ruta para menú principal usuario
             }
             exit();
         } else {
             //permiso para continuar denegado (datos incorrectos)
             $_SESSION['mensaje_error'] = "Datos de usuario incorrectos";
-            header("location: ../template/inicio_sesion.php"); //Redirección al login para intentar un nuevo ingreso
+            header("Location: ../template/inicio_sesion.php"); //Redirección al login para intentar un nuevo ingreso
             exit();
         } 
-    }   else {
+    } else {
             //en caso de que los datos no existan
             $_SESSION['mensaje_error'] = "Usuario no encontrado";
-            header("location: ../template/inicio_sesion.php"); //Redirección al login para intentar un nuevo ingreso        
+            header("Location: ../template/inicio_sesion.php"); //Redirección al login para intentar un nuevo ingreso        
             exit();
-        }
+    }
+
 }
 
 $conn->close();

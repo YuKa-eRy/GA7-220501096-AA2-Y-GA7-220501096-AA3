@@ -1,5 +1,4 @@
 <?php
-
 $servername = "localhost";
 $username = "root"; //reemplazar con el usuario propio del localhost
 $password = "Misterg12004"; //reemplazar con la contraseña respectiva

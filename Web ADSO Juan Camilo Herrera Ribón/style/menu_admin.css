@@ -28,12 +28,16 @@ body {
 }
 
 .nav-pri{
-    font-size: 27px;
+    font-size: 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     height: 60px;
     padding: 20px 0;
+}
+
+.nav-pri ul h3 {
+    color: orange;
 }
 
 .nav-pri ul p {
@@ -60,7 +64,7 @@ hr {
 
 a {
     text-decoration: none;
-    color: black;
+    color: goldenrod;
     padding-left: 1.3rem;
 }
 
